@@ -25,7 +25,7 @@ namespace Assignment5.Controllers
             }
 
             int userId = maybeUserId.Value;
-            var songs = (from x in context.CartItems where x.UserId==userId select x.Song);
+            var songs = (from x in context.CartItems.Include(item => item.Song.Musician) where x.UserId==userId select x.Song);
 
             return View(songs);
         }
