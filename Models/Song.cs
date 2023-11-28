@@ -15,5 +15,7 @@ public partial class Song
 
     public int MusicianId { get; set; }
 
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
     public virtual Musician Musician { get; set; } = null!;
 }

@@ -43,9 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Musician.MusicianId)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.SongId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SongId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SongId">Delete</a>
+                <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.SongId">Add to cart</a>
             </td>
         </tr>
 }
