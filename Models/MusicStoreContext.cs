@@ -6,13 +6,16 @@ namespace Assignment5.Models;
 
 public partial class MusicStoreContext : DbContext
 {
+    private IConfiguration Configuration;
+
     public MusicStoreContext()
     {
     }
 
-    public MusicStoreContext(DbContextOptions<MusicStoreContext> options)
+    public MusicStoreContext(DbContextOptions<MusicStoreContext> options, IConfiguration configuration)
         : base(options)
     {
+        Configuration = configuration;
     }
 
     public virtual DbSet<CartItem> CartItems { get; set; }
@@ -24,7 +27,7 @@ public partial class MusicStoreContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\ben\\source\\repos\\Assignment5\\Data\\MusicStore.mdf;Integrated Security=True;Trusted_Connection=True;");
+        => optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
