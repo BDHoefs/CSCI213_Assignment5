@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace Assignment5.Models;
@@ -7,7 +8,6 @@ namespace Assignment5.Models;
 public partial class MusicStoreContext : DbContext
 {
     private IConfiguration Configuration;
-
     public MusicStoreContext()
     {
     }
@@ -20,11 +20,14 @@ public partial class MusicStoreContext : DbContext
 
     public virtual DbSet<CartItem> CartItems { get; set; }
 
+    public virtual DbSet<Genre> Genres { get; set; }
+
     public virtual DbSet<Musician> Musicians { get; set; }
 
     public virtual DbSet<Song> Songs { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -33,28 +36,32 @@ public partial class MusicStoreContext : DbContext
     {
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__CartItem__3214EC0719F99E0F");
+            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC0749F62458");
 
             entity.ToTable("CartItem");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
 
             entity.HasOne(d => d.Song).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.SongId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CartItem__SongId__5FB337D6");
+                .HasConstraintName("FK__CartItem__SongId__70DDC3D8");
 
             entity.HasOne(d => d.User).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CartItem__UserId__5EBF139D");
+                .HasConstraintName("FK__CartItem__UserId__6FE99F9F");
+        });
+
+        modelBuilder.Entity<Genre>(entity =>
+        {
+            entity.HasKey(e => e.GenreId).HasName("PK__Genres__0385057E7EB0894C");
+
+            entity.Property(e => e.GenreName).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Musician>(entity =>
         {
             entity.HasKey(e => e.MusicianId).HasName("PK__Musician__4904FC9A2A6BB35F");
 
-            entity.Property(e => e.Genre).HasMaxLength(100);
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
@@ -64,6 +71,10 @@ public partial class MusicStoreContext : DbContext
 
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Price).HasColumnType("money");
+
+            entity.HasOne(d => d.Genre).WithMany(p => p.Songs)
+                .HasForeignKey(d => d.GenreId)
+                .HasConstraintName("FK_dbo.Songs_dbo.Genres_GenreId");
 
             entity.HasOne(d => d.Musician).WithMany(p => p.Songs)
                 .HasForeignKey(d => d.MusicianId)
