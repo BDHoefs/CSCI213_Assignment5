@@ -1,51 +1,65 @@
-﻿@model IEnumerable<Assignment5.Models.Song>
+﻿@model ValueTuple<List<Assignment5.Models.Song>, List<Assignment5.Models.Musician>>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Browse Music</h1>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by musician: 
+            <select name="musicianFilter">
+                @foreach(var musician in Model.Item2)
+                {
+                    <option>@Html.DisplayFor(modelItem => musician.Name)</option>
+                }
+            </select>
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Length)
+                Length
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Price
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Musician)
+                Musician
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Length)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Musician.MusicianId)
-            </td>
-            <td>
-                <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.SongId">Add to cart</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Item1)
+        {
+            string length = (item.Length / 60).ToString("D2") + ":" + (item.Length % 60).ToString("D2");
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => length)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Musician.Name)
+                </td>
+                <td>
+                    <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.SongId">Add to cart</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

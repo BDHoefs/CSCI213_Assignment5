@@ -19,10 +19,11 @@ namespace Assignment5.Controllers
         }
 
         // GET: Songs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string musicianFilter)
         {
-            var musicStoreContext = _context.Songs.Include(s => s.Musician);
-            return View(await musicStoreContext.ToListAsync());
+            var songs = _context.Songs.Include(s => s.Musician);
+            var musicians = _context.Musicians;
+            return View((await songs.ToListAsync(), await musicians.ToListAsync()));
         }
 
         // GET: Songs/Details/5
