@@ -9,7 +9,5 @@ public partial class Musician
 
     public string Name { get; set; } = null!;
 
-    public string Genre { get; set; } = null!;
-
     public virtual ICollection<Song> Songs { get; set; } = new List<Song>();
 }
