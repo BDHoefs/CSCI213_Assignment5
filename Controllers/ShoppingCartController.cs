@@ -20,17 +20,70 @@ namespace Assignment5.Controllers
 
             if (!maybeUserId.HasValue)
             {
-                // TODO: Handle error
-                throw new Exception();
+                return RedirectToAction("Index", "Home");
             }
 
             int userId = maybeUserId.Value;
             var songs = (from x in context.CartItems.Include(item => item.Song.Musician) where x.UserId==userId select x.Song);
 
-            return View(songs);
+            decimal total = 0;
+            foreach(var song in songs)
+            {
+                total += song.Price;
+            }
+
+            return View((songs.ToList(), total));
         }
 
+        public IActionResult ClearCart()
+        {
+            var maybeUserId = HttpContext.Session.GetInt32("userId");
+
+            if (!maybeUserId.HasValue)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            int userId = maybeUserId.Value;
+            var user = (from x in context.Users where x.UserId == userId select x).First();
+            var cartItems = from x in context.CartItems where x.UserId == userId select x;
+
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                cartItems.ExecuteDelete();
+                context.SaveChanges();
+                transaction.Commit();
+            }
+            return RedirectToAction("Index");
+        }
+
+        [Route("ShoppingCart/AddToCart/{songId}")]
         public IActionResult AddToCart(int songId)
+        {
+            var maybeUserId = HttpContext.Session.GetInt32("userId");
+
+            if (!maybeUserId.HasValue)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            int userId = maybeUserId.Value;
+            var user = (from x in context.Users where x.UserId == userId select x).Include(user=>user.CartItems).First();
+
+            bool songAlreadyInCart = (from x in context.CartItems where (x.SongId == songId && x.UserId == userId) select x).Count() > 0;
+            if(songAlreadyInCart)
+            {
+                return RedirectToAction("Index", "Songs");
+            }
+
+            CartItem item = new CartItem { SongId = songId, UserId = userId };
+            context.CartItems.Add(item);
+            context.SaveChanges();
+
+            return RedirectToAction("Index", "Songs");
+        }
+
+        public IActionResult EnterPaymentDetails()
         {
             var maybeUserId = HttpContext.Session.GetInt32("userId");
 
@@ -43,26 +96,9 @@ namespace Assignment5.Controllers
             int userId = maybeUserId.Value;
             var user = (from x in context.Users where x.UserId == userId select x).First();
 
-            using (var transaction = context.Database.BeginTransaction())
-            {
-                context.Database.ExecuteSql($"SET IDENTITY_INSERT dbo.CartItem ON");
+            // TODO: Make a payment request to the payment provider we would use in a real world application
+            //      and send out information about the unfulfilled order to whoever will fulfill it.
 
-                user.CartItems.Add(new CartItem { SongId = 1, UserId = 1 });
-                context.Update(user);
-                context.SaveChanges();
-                transaction.Commit();
-            }
-
-            return RedirectToAction("Index", "Songs");
-        }
-
-        public IActionResult ConfirmPurchase()
-        {
-            return View();
-        }
-
-        public IActionResult Purchase()
-        {
             return View();
         }
     }

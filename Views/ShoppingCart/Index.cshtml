@@ -1,48 +1,62 @@
-﻿@model IEnumerable<Assignment5.Models.Song>
+﻿@model ValueTuple<List<Assignment5.Models.Song>, decimal> // Songs and total
 
 @{
     ViewData["Title"] = "View";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>View</h1>
-
+<h1>Shopping Cart</h1>
+<a asp-action="ClearCart">Clear Cart</a>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Item1.First().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Length)
+                @Html.DisplayNameFor(model => model.Item1.First().Length)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Item1.First().Musician)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Musician)
+                @Html.DisplayNameFor(model => model.Item1.First().Price)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Item1)
         {
+            string length = (item.Length / 60).ToString("D2") + ":" + (item.Length % 60).ToString("D2");
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Length)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @Html.DisplayFor(modelItem => length)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Musician.Name)
                 </td>
+                <td>
+                    $@Html.DisplayFor(modelItem => item.Price)
+                </td>
             </tr>
         }
+        <tr>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+                Total: $@Html.DisplayFor(modelItem => Model.Item2)
+            </td>
+        </tr>
     </tbody>
 </table>
-
+<a asp-action="EnterPaymentDetails">Purchase</a>

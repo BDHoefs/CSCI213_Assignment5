@@ -63,7 +63,7 @@
                     @Html.DisplayFor(modelItem => length)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    $@Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Genre.GenreName)
@@ -72,7 +72,7 @@
                     @Html.DisplayFor(modelItem => item.Musician.Name)
                 </td>
                 <td>
-                    <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.SongId">Add to cart</a>
+                    <a name="songId" asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.SongId">Add to cart</a>
                 </td>
             </tr>
         }
