@@ -19,7 +19,7 @@ namespace Assignment5.Controllers
         }
 
         // GET: Songs
-        public async Task<IActionResult> Index(string musicianFilter, string genreFilter)
+        public async Task<IActionResult> Browse(string musicianFilter, string genreFilter)
         {
             var songs = _context.Songs.Include(s => s.Musician).Include(s => s.Genre);
 
