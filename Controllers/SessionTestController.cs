@@ -11,7 +11,7 @@ namespace Assignment5.Controllers
 
         public IActionResult SetSession()
         {
-            HttpContext.Session.SetInt32("userId", 1);
+            HttpContext.Session.SetInt32("userId", 3);
             return RedirectToAction("Index", "Home");
         }
     }
