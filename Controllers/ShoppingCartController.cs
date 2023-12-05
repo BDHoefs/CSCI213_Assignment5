@@ -73,14 +73,14 @@ namespace Assignment5.Controllers
             bool songAlreadyInCart = (from x in context.CartItems where (x.SongId == songId && x.UserId == userId) select x).Count() > 0;
             if(songAlreadyInCart)
             {
-                return RedirectToAction("Index", "Songs");
+                return RedirectToAction("Browse", "Songs");
             }
 
             CartItem item = new CartItem { SongId = songId, UserId = userId };
             context.CartItems.Add(item);
             context.SaveChanges();
 
-            return RedirectToAction("Index", "Songs");
+            return RedirectToAction("Browse", "Songs");
         }
 
         public IActionResult EnterPaymentDetails()

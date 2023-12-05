@@ -18,8 +18,14 @@ namespace Assignment5.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var musicStoreContext = _context.Songs.Include(s => s.Genre).Include(s => s.Musician);
+            return View(await musicStoreContext.ToListAsync());
+        }
+
         // GET: Songs
-        public async Task<IActionResult> Index(string musicianFilter, string genreFilter)
+        public async Task<IActionResult> Browse(string musicianFilter, string genreFilter)
         {
             var songs = _context.Songs.Include(s => s.Musician).Include(s => s.Genre);
 
