@@ -89,17 +89,24 @@ namespace Assignment5.Controllers
 
             if (!maybeUserId.HasValue)
             {
-                // TODO: Handle error
-                throw new Exception();
+                return RedirectToAction("Index", "Home");
             }
 
             int userId = maybeUserId.Value;
             var user = (from x in context.Users where x.UserId == userId select x).First();
 
-            // TODO: Make a payment request to the payment provider we would use in a real world application
-            //      and send out information about the unfulfilled order to whoever will fulfill it.
+            if (user.Type != "Customer")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             return View();
+        }
+
+        public IActionResult Purchase([Bind("Id,NameOnCard,CardNumber,Expiration,CVV")] PaymentDetails paymentDetails)
+        {
+            // TODO: In a real world application purchasing logic would go here
+            return RedirectToAction("Index", "Home");
         }
     }
 }
