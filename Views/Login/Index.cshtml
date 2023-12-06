@@ -1,7 +1,14 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Login</h1>
+
+<form asp-action="Login" method="get">
+    <div class="form-actions no-color">
+        <input name="userName" />
+        <input name="password" />
+        <input type="submit" value="Login" class="btn btn-default" /> |
+    </div>
+</form>
